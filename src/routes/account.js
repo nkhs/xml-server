@@ -2,6 +2,8 @@ var router = require("express").Router();
 var mongoose = require("mongoose");
 var Account = mongoose.model("Account");
 var util = require("../lib/util");
+var config = require('../../config');
+var md5 = require('md5');
 
 router.get("/", (req, res, next) => {
     Account.find({})
@@ -13,12 +15,42 @@ router.get("/", (req, res, next) => {
         });
 });
 
-router.get("/:userid", (req, res, next) => {
-    const userid = req.params.userid;
-    Account.find({
-        Added_User: userid
+router.post("/login", (req, res) => {
+    var email = req.body.email;
+
+    var password = md5(req.body.password);
+    console.log(password)
+    if (email == config.ADMIN.auth_email() && password == config.ADMIN.auth_password()) {
+        var account = {
+            email: email,
+            password: password,
+            isAdmin: true
+        }
+        util.responseHandler(res, true, "Success", account);
+        return;
+    }
+    
+    Account.findOne({
+        email: email,
+        password: password,
     })
-        .populate('Engine')
+        .then((account) => {
+            if (account == null) {
+                return util.responseHandler(res, false, "Please check your email and password", null);
+            } else {
+                console.log(account)
+                return util.responseHandler(res, true, "Success", account);
+            }
+
+        })
+        .catch(err => {
+            return util.responseHandler(res, false, "Error", err);
+        });
+});
+
+router.post("/update", (req, res) => {
+    const userid = req.body._id;
+    Account.findByIdAndUpdate(userid, req.body)
         .then((engines) => {
             return util.responseHandler(res, true, "Success", engines);
         })
@@ -27,7 +59,20 @@ router.get("/:userid", (req, res, next) => {
         });
 });
 
-router.put("/", (req, res, next) => {
+router.get("/:userid", (req, res) => {
+    const userid = req.params.userid;
+    Account.find({
+        Added_User: userid
+    })
+        .then((engines) => {
+            return util.responseHandler(res, true, "Success", engines);
+        })
+        .catch(err => {
+            return util.responseHandler(res, false, "Error", err);
+        });
+});
+
+router.put("/", (req, res) => {
     var newEngine = new Account(req.body);
     newEngine
         .save()
@@ -40,19 +85,19 @@ router.put("/", (req, res, next) => {
         });
 });
 
-router.post("/", (req, res, next) => {
+router.post("/", (req, res) => {
     if (!req.body._id) return util.responseHandler(res, false, "Error: require _id", null);
     Account.findByIdAndUpdate(req.body._id, {
         $set: req.body
     }, {
-            new: false
-        }, function (err, updatedChannel) {
-            if (err) return util.responseHandler(res, false, "Error", err);
-            return util.responseHandler(res, true, 'successfully updated channel', updatedChannel);
-        });
+        new: false
+    }, function (err, updatedChannel) {
+        if (err) return util.responseHandler(res, false, "Error", err);
+        return util.responseHandler(res, true, 'successfully updated channel', updatedChannel);
+    });
 });
 
-router.delete("/:id", (req, res, next) => {
+router.delete("/:id", (req, res) => {
     var engineID = req.params.id;
     Account.deleteOne({
         _id: engineID
