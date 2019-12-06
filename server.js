@@ -40,9 +40,10 @@ require("./src/models");
 
 app.use('/api', require("./src/routes"));
 
-app.use(function (req, res /*, next*/) {
-  res.redirect("/");
-});
+// app.use(function (req, res /*, next*/) {
+//   console.log('*')
+//   res.redirect("/");
+// });
 
 util.checkClientIp(function () { });
 

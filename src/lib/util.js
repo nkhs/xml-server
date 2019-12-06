@@ -65,7 +65,7 @@ function makeMainBack(filePath) {
         fs.unlink(`${filePath}/${fileName}`, function (error) {
 
           fs.writeFile(`${filePath}/${fileName}`, newText, 'utf-8', function (error, txt) {
-            console.log(error, txt)
+            // console.log(error, txt)
           });
         });
 
@@ -90,7 +90,7 @@ module.exports = {
       if (success) {
         return;
       }
-      console.log(error, 'called make Main Back');
+      // console.log(error, 'called make Main Back');
       makeMainBack(config.WEB_SOURCE);
     });
   },

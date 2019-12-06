@@ -19,17 +19,15 @@ router.post("/login", (req, res) => {
     var email = req.body.email;
 
     var password = md5(req.body.password);
-    console.log(password)
+    
     if (email == config.ADMIN.auth_email() && password == config.ADMIN.auth_password()) {
-        var account = {
+        return util.responseHandler(res, true, "Success", {
             email: email,
             password: password,
             isAdmin: true
-        }
-        util.responseHandler(res, true, "Success", account);
-        return;
+        });
     }
-    
+
     Account.findOne({
         email: email,
         password: password,
@@ -50,6 +48,7 @@ router.post("/login", (req, res) => {
 
 router.post("/update", (req, res) => {
     const userid = req.body._id;
+    req.body.password = md5(req.body.password)
     Account.findByIdAndUpdate(userid, req.body)
         .then((engines) => {
             return util.responseHandler(res, true, "Success", engines);
@@ -73,6 +72,9 @@ router.get("/:userid", (req, res) => {
 });
 
 router.put("/", (req, res) => {
+    
+    req.body.password = md5(req.body.password);
+
     var newEngine = new Account(req.body);
     newEngine
         .save()
