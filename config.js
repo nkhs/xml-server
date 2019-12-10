@@ -1,6 +1,7 @@
 var port = 80;
 
 var host_url = `35.184.34.167`;
+// var host_url = `127.0.0.1`;
 var client_url = `http://${host_url}/#`;
 var mongodb_url = `mongodb://localhost:27017/xml-db`;
 // var mongodb_url = `mongodb://192.168.1.105:27017/xml-db`;

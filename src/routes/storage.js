@@ -1,0 +1,46 @@
+var express = require('express');
+var multer = require('multer');
+var path = require('path');
+var fs = require('fs');
+var router = express()
+var config = require('../../config')
+var upload = multer({ dest: `${config.STORAGE_PATH}/` })
+var util = require("../lib/util");
+const handleError = (err, res) => {
+    res
+        .status(500)
+        .contentType("text/plain")
+        .end("Oops! Something went wrong!");
+};
+
+router.post("/upload", upload.single("file"), (req, res) => {
+    // console.log(req.body)
+    // var deviceId = req.body.deviceId.toLowerCase();
+    const tempPath = req.file.path;
+    const fileName = `${tempPath}.jpg`;
+    const targetPath = fileName;
+    
+    fs.rename(tempPath, targetPath, err => {
+        if (err) {
+            console.log(err);
+            return handleError(err, res);
+        }
+        util.responseHandler(res, true, "success", `api/storage/get/${path.basename(fileName)}`);
+    });
+});
+
+router.get("/get/:filename", (req, res) => {
+    var filename = req.params.filename;
+    var filePath = `${config.STORAGE_PATH}/${filename}`;
+    console.log(filePath)
+    try {
+        var img = fs.readFileSync(filePath);
+        res.writeHead(200, { "Content-Type": "image/jpeg" });
+        res.end(img, "binary");
+    } catch (err) {
+        console.log(err)
+        res.sendStatus(404);
+    }
+});
+
+module.exports = router;

@@ -19,7 +19,7 @@ router.post("/login", (req, res) => {
     var email = req.body.email;
 
     var password = md5(req.body.password);
-    
+
     if (email == config.ADMIN.auth_email() && password == config.ADMIN.auth_password()) {
         return util.responseHandler(res, true, "Success", {
             email: email,
@@ -50,8 +50,8 @@ router.post("/update", (req, res) => {
     const userid = req.body._id;
     req.body.password = md5(req.body.password)
     Account.findByIdAndUpdate(userid, req.body)
-        .then((engines) => {
-            return util.responseHandler(res, true, "Success", engines);
+        .then((accountList) => {
+            return util.responseHandler(res, true, "Success", accountList);
         })
         .catch(err => {
             return util.responseHandler(res, false, "Error", err);
@@ -63,8 +63,8 @@ router.get("/:userid", (req, res) => {
     Account.find({
         Added_User: userid
     })
-        .then((engines) => {
-            return util.responseHandler(res, true, "Success", engines);
+        .then((accountList) => {
+            return util.responseHandler(res, true, "Success", accountList);
         })
         .catch(err => {
             return util.responseHandler(res, false, "Error", err);
@@ -72,14 +72,14 @@ router.get("/:userid", (req, res) => {
 });
 
 router.put("/", (req, res) => {
-    
+
     req.body.password = md5(req.body.password);
 
-    var newEngine = new Account(req.body);
-    newEngine
+    var newAccount = new Account(req.body);
+    newAccount
         .save()
         .then(() => {
-            return util.responseHandler(res, true, "Succesfully create new Channel", null);
+            return util.responseHandler(res, true, "Succesfully create new account", null);
         })
         .catch(err => {
             console.log(err)
@@ -93,16 +93,16 @@ router.post("/", (req, res) => {
         $set: req.body
     }, {
         new: false
-    }, function (err, updatedChannel) {
+    }, function (err, updatedAccount) {
         if (err) return util.responseHandler(res, false, "Error", err);
-        return util.responseHandler(res, true, 'successfully updated channel', updatedChannel);
+        return util.responseHandler(res, true, 'successfully updated account', updatedAccount);
     });
 });
 
 router.delete("/:id", (req, res) => {
-    var engineID = req.params.id;
+    var accountID = req.params.id;
     Account.deleteOne({
-        _id: engineID
+        _id: accountID
     })
         .exec()
         .then(result => {
