@@ -1,13 +1,15 @@
 var router = require("express").Router();
 var mongoose = require("mongoose");
+
 // var Account = mongoose.model("Account");
 var Ad = mongoose.model("Ad");
 
 var util = require("../lib/util");
 var config = require('../../config');
 
-router.get("/", (req, res, next) => {
-    Ad.find({})
+router.get("/:userId", (req, res, next) => {
+    
+    Ad.find({ owner: req.params.userId })
         .then((adList) => {
             return util.responseHandler(res, true, "Success", adList);
         })

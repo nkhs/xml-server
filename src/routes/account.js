@@ -22,6 +22,7 @@ router.post("/login", (req, res) => {
 
     if (email == config.ADMIN.auth_email() && password == config.ADMIN.auth_password()) {
         return util.responseHandler(res, true, "Success", {
+            _id:config.ADMIN.uid,
             email: email,
             password: password,
             isAdmin: true

@@ -13,19 +13,26 @@ const handleError = (err, res) => {
         .end("Oops! Something went wrong!");
 };
 
-router.post("/upload", upload.single("file"), (req, res) => {
+router.post("/upload/:userId", upload.single("file"), (req, res) => {
     // console.log(req.body)
+    var userId = req.params.userId;
     // var deviceId = req.body.deviceId.toLowerCase();
     const tempPath = req.file.path;
     const fileName = `${tempPath}.jpg`;
-    const targetPath = fileName;
-    
+
+
+    var folder = path.dirname(fileName)
+    var file = path.basename(fileName)
+    console.log('fileName', fileName, folder, file)
+
+    var targetFile = `${userId}_${file}`;
+    targetPath = `${folder}\\${targetFile}`
     fs.rename(tempPath, targetPath, err => {
         if (err) {
             console.log(err);
             return handleError(err, res);
         }
-        util.responseHandler(res, true, "success", `api/storage/get/${path.basename(fileName)}`);
+        util.responseHandler(res, true, "success", `api/storage/get/${targetFile}`);
     });
 });
 
@@ -43,4 +50,19 @@ router.get("/get/:filename", (req, res) => {
     }
 });
 
+router.get("/image-list/:userId", (req, res) => {
+    try {
+        var userId = req.params.userId;
+        var files = fs.readdirSync(`${config.STORAGE_PATH}`);
+        var result = [];
+        files.forEach(file => {
+            if (file.includes(userId))
+                result.push(`api/storage/get/${file}`);
+        })
+        // console.log(result);
+        util.responseHandler(res, true, 'success', result);
+    } catch (e) {
+        util.responseHandler(res, false, 'error', e);
+    }
+});
 module.exports = router;

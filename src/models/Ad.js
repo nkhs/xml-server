@@ -10,10 +10,7 @@ var adSchema = new Schema({
   enable: Boolean,
   scheduleType: String,
   schedule: String,
-  owner: {
-    type: Schema.Types.ObjectId,
-    ref: "Account",
-  },
+  owner: String,
 });
 
 mongoose.model("Ad", adSchema);

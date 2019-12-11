@@ -25,6 +25,7 @@ module.exports = {
     auth_password: function () {
       try { return require('./gmail.js').password; } catch (error) { }
       return default_auth_password;
-    }
+    },
+    uid: "ff00000000000000000000ff"
   }
 };
