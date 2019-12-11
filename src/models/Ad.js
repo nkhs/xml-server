@@ -5,7 +5,10 @@ var adSchema = new Schema({
   name: String,
   image: String,
   description: String,
+  type: String,
+  bank: String,
   enable: Boolean,
+  schedule: Array,
   owner: {
     type: Schema.Types.ObjectId,
     ref: "Account",

@@ -32,7 +32,7 @@ router.post("/upload", upload.single("file"), (req, res) => {
 router.get("/get/:filename", (req, res) => {
     var filename = req.params.filename;
     var filePath = `${config.STORAGE_PATH}/${filename}`;
-    console.log(filePath)
+    // console.log(filePath)
     try {
         var img = fs.readFileSync(filePath);
         res.writeHead(200, { "Content-Type": "image/jpeg" });
