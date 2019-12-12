@@ -26,7 +26,7 @@ router.post("/upload/:userId", upload.single("file"), (req, res) => {
     console.log('fileName', fileName, folder, file)
 
     var targetFile = `${userId}_${file}`;
-    targetPath = `${folder}\\${targetFile}`
+    targetPath = `${folder}/${targetFile}`
     fs.rename(tempPath, targetPath, err => {
         if (err) {
             console.log(err);

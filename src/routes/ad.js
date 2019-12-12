@@ -8,7 +8,7 @@ var util = require("../lib/util");
 var config = require('../../config');
 
 router.get("/:userId", (req, res, next) => {
-    
+
     Ad.find({ owner: req.params.userId })
         .then((adList) => {
             return util.responseHandler(res, true, "Success", adList);
@@ -30,7 +30,7 @@ router.post("/update", (req, res) => {
 });
 
 router.put("/", (req, res) => {
-
+    console.log(req.body)
     var newAd = new Ad(req.body);
     newAd
         .save()
