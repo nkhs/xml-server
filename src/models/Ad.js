@@ -2,7 +2,7 @@ const mongoose = require("mongoose"),
   Schema = mongoose.Schema;
 
 var adSchema = new Schema({
-  name: String,
+  name: { type: String, index: true, unique: true },
   image: String,
   link: String,
   type: String,

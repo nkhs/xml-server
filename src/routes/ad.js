@@ -30,7 +30,7 @@ router.post("/update", (req, res) => {
 });
 
 router.put("/", (req, res) => {
-    console.log(req.body)
+
     var newAd = new Ad(req.body);
     newAd
         .save()
@@ -39,7 +39,11 @@ router.put("/", (req, res) => {
         })
         .catch(err => {
             console.log(err)
-            return util.responseHandler(res, false, "Error", err);
+            if (((err + '').includes('duplicate key error collection'))) {
+                return util.responseHandler(res, false, "The Ad Name is already exist.", err);
+            } else {
+                return util.responseHandler(res, false, "Error", err);
+            }
         });
 });
 
