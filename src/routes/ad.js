@@ -47,6 +47,27 @@ router.put("/", (req, res) => {
         });
 });
 
+router.post("/ad-namecheck", (req, res) => {
+    Ad
+        .findOne({ name: req.body.name })
+        .then((ad) => {
+            if (ad == null) {
+                return util.responseHandler(res, true, "Available Ad Name", null);
+            } else {
+                if (ad._id == req.body.id) {
+                    return util.responseHandler(res, true, "Available Ad Name", null);
+                } else {
+                    return util.responseHandler(res, false, "The Ad Name is already exist.", null);
+                }
+            }
+
+        })
+        .catch(err => {
+            console.log(err)
+            return util.responseHandler(res, false, "Error Occur", err);
+        });
+});
+
 router.post("/", (req, res) => {
     if (!req.body._id) return util.responseHandler(res, false, "Error: require _id", null);
     Ad.findByIdAndUpdate(req.body._id, {
