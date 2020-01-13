@@ -11,6 +11,11 @@ var adSchema = new Schema({
   scheduleType: String,
   schedule: String,
   owner: String,
+  order: Number,
+  tagLine: String,
+  position: Number,
+  height: Number,
+  fullwidth: Boolean,
 });
 
 mongoose.model("Ad", adSchema);
