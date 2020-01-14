@@ -58,7 +58,9 @@ var _xml = (uid, userName) => {
             var Banner = '';
             var AppOpenAd = '';
             for (var i = 0; i < adList.length; i++) {
+                if (!adList[i].enable) continue;
                 if (!checkSchedule(adList[i])) continue;
+
                 if (adList[i].type == 'Rolling') {
                     Rolling +=
                         `<rollingAd>\n` +
