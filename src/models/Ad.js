@@ -16,6 +16,7 @@ var adSchema = new Schema({
   position: Number,
   height: Number,
   fullwidth: Boolean,
+  tabId: Number,
 });
 
 mongoose.model("Ad", adSchema);

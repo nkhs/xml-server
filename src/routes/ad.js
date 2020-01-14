@@ -6,7 +6,9 @@ var Ad = mongoose.model("Ad");
 
 var util = require("../lib/util");
 var config = require('../../config');
-
+var xml = require('../lib/xml');
+var fs = require('fs');
+var path = require('path');
 router.get("/:userId", (req, res, next) => {
 
     Ad.find({ owner: req.params.userId })
@@ -18,15 +20,27 @@ router.get("/:userId", (req, res, next) => {
         });
 });
 
+router.get("/xml/:userId", (req, res, next) => {
+    var appDir = path.dirname(require.main.filename);
+    var xmlPath = appDir + `/xml_${req.params.userId}.xml`;
+    
+    if (fs.existsSync(xmlPath))
+        res.sendFile(xmlPath);
+    else util.responseHandler(res, false, 'Cannot find xml file');
+});
+
 router.post("/update", (req, res) => {
     const adId = req.body._id;
     Ad.findByIdAndUpdate(adId, req.body)
         .then((adList) => {
+            xml();
             return util.responseHandler(res, true, "Success", adList);
         })
         .catch(err => {
             return util.responseHandler(res, false, "Error", err);
         });
+
+
 });
 
 router.put("/", (req, res) => {
@@ -35,6 +49,7 @@ router.put("/", (req, res) => {
     newAd
         .save()
         .then(() => {
+            xml();
             return util.responseHandler(res, true, "Succesfully create new AD", null);
         })
         .catch(err => {
@@ -76,6 +91,7 @@ router.post("/", (req, res) => {
         new: false
     }, function (err, updatedAd) {
         if (err) return util.responseHandler(res, false, "Error", err);
+        xml();
         return util.responseHandler(res, true, 'successfully updated Ad', updatedAd);
     });
 });
@@ -87,6 +103,7 @@ router.delete("/:id", (req, res) => {
     })
         .exec()
         .then(result => {
+            xml();
             return util.responseHandler(res, true, "Success", result);
         })
         .catch(error => {

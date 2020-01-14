@@ -61,9 +61,14 @@ function normalizePort(val) {
   return false;
 }
 
+
 mongoose.connect(config.DB.URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => {
     console.log("mongodb connected ...");
+    var xml = require('./src/lib/xml');
+    xml();
+    setInterval(xml, 1000 * 3600);
+
   })
   .catch(err => {
     console.log("err", err);
