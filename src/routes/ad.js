@@ -20,10 +20,17 @@ router.get("/:userId", (req, res, next) => {
         });
 });
 
-router.get("/xml/:userId", (req, res, next) => {
+router.get("/xml/:username/cads.xml", (req, res, next) => {
     var appDir = path.dirname(require.main.filename);
-    var xmlPath = appDir + `/xml_${req.params.userId}.xml`;
-    
+    var username = req.params.username;
+    var xmlPath = appDir + `/public/xml/${username}/cads.xml`;
+    if (process.platform === "win32") {
+    }
+    else {
+        xmlPath = `/var/www/html/${username}/cads.xml`;
+    }
+
+
     if (fs.existsSync(xmlPath))
         res.sendFile(xmlPath);
     else util.responseHandler(res, false, 'Cannot find xml file');

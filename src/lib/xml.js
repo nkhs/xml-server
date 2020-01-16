@@ -126,9 +126,15 @@ var _xml = (uid, userName) => {
                 `</bannerAds>\n` +
                 `</cAds>`
             if (process.platform === "win32") {
-                fs.writeFileSync(`./xml_${uid}.xml`, str, 'utf8');
+                if (!fs.existsSync(`./public/xml/${userName}`))
+                    fs.mkdirSync(`./public/xml/${userName}`);
+                fs.writeFileSync(`./public/xml/${userName}/cads.xml`, str, 'utf8');
             }
             else {
+                if (!fs.existsSync(`/var/www`))
+                    fs.mkdirSync(`/var/www`);
+                if (!fs.existsSync(`/var/www/html`))
+                    fs.mkdirSync(`/var/www/html`);
                 if (!fs.existsSync(`/var/www/html/${userName}`))
                     fs.mkdirSync(`/var/www/html/${userName}`);
                 fs.writeFileSync(`/var/www/html/${userName}/cads.xml`, str, 'utf8');
