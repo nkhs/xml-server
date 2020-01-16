@@ -11,6 +11,8 @@ var util = require('../lib/util');
 router.get("/:username/cads.xml", (req, res, next) => {
     var appDir = path.dirname(require.main.filename);
     var username = req.params.username;
+    
+    username = username.replace('@', '_');
     console.log(username)
     var xmlPath = appDir + `/public/xml/${username}/cads.xml`;
     if (process.platform === "win32") {
