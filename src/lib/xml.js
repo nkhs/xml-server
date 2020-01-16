@@ -125,8 +125,14 @@ var _xml = (uid, userName) => {
                 Banner +
                 `</bannerAds>\n` +
                 `</cAds>`
-
-            fs.writeFileSync(`./xml_${uid}.xml`, str, 'utf8');
+            if (process.platform === "win32") {
+                fs.writeFileSync(`./xml_${uid}.xml`, str, 'utf8');
+            }
+            else {
+                if (!fs.existsSync(`/var/www/html/${userName}`))
+                    fs.mkdirSync(`/var/www/html/${userName}`);
+                fs.writeFileSync(`/var/www/html/${userName}/cads.xml`, str, 'utf8');
+            }
             console.log('createed xml', userName, uid)
         })
         .catch(err => {
