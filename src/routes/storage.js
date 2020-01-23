@@ -32,11 +32,27 @@ router.post("/upload/:userId", upload.single("file"), (req, res) => {
             console.log(err);
             return handleError(err, res);
         }
-        util.responseHandler(res, true, "success", `api/storage/get/${targetFile}`);
+        util.responseHandler(res, true, "success", `${userId}/${targetFile}`);
     });
 });
 
-router.get("/get/:filename", (req, res) => {
+router.get("/:userId/image-list", (req, res) => {
+    try {
+        var userId = req.params.userId;
+        var files = fs.readdirSync(`${config.STORAGE_PATH}`);
+        var result = [];
+        files.forEach(file => {
+            if (file.includes(userId))
+                result.push(`${userId}/${file}`);
+        })
+        // console.log(result);
+        util.responseHandler(res, true, 'success', result);
+    } catch (e) {
+        util.responseHandler(res, false, 'error', e);
+    }
+});
+
+router.get("/:userId/:filename", (req, res) => {
     var filename = req.params.filename;
     var filePath = `${config.STORAGE_PATH}/${filename}`;
     // console.log(filePath)
@@ -45,24 +61,10 @@ router.get("/get/:filename", (req, res) => {
         res.writeHead(200, { "Content-Type": "image/jpeg" });
         res.end(img, "binary");
     } catch (err) {
-        console.log(err)
+        // console.log(err)
         res.sendStatus(404);
     }
 });
 
-router.get("/image-list/:userId", (req, res) => {
-    try {
-        var userId = req.params.userId;
-        var files = fs.readdirSync(`${config.STORAGE_PATH}`);
-        var result = [];
-        files.forEach(file => {
-            if (file.includes(userId))
-                result.push(`api/storage/get/${file}`);
-        })
-        // console.log(result);
-        util.responseHandler(res, true, 'success', result);
-    } catch (e) {
-        util.responseHandler(res, false, 'error', e);
-    }
-});
+
 module.exports = router;

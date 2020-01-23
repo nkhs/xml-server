@@ -1,9 +1,6 @@
 var express = require('express');
 var router = express.Router();
 
-router.use('/account', require('./account'));
-router.use('/ad', require('./ad'));
-router.use('/storage', require('./storage'));
 
 var fs = require('fs');
 var path = require('path');
@@ -25,5 +22,10 @@ router.get("/:username/cads.xml", (req, res, next) => {
         res.sendFile(xmlPath);
     else util.responseHandler(res, false, 'Cannot find xml file');
 });
+
+
+router.use('/account', require('./account'));
+router.use('/ad', require('./ad'));
+router.use('/', require('./storage'));
 
 module.exports = router;

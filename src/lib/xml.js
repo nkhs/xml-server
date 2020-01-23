@@ -2,7 +2,7 @@ var mongoose = require("mongoose");
 var Account = mongoose.model("Account");
 var Ad = mongoose.model("Ad");
 var fs = require('fs');
-
+var config = require('../../config');
 var weekNameToNumber = (str) => {
     return 'sun|mon|tue|wed|thu|fri|sat|sunday|monday|tuesday|wednesday|thursday|friday|saturday'.split('|').indexOf(str.toLowerCase()) % 7;
 }
@@ -113,8 +113,12 @@ var _xml = (uid, userName) => {
 
                 }
             }
-
+            var host_url = config.host_url;
+            if (config.port == 80) host_url = host_url.replace(':80', '');
             var str = `<cAds>\n` +
+                `    <resources>\n` +
+                `        <path>${host_url}/api/</path>\n` +
+                `    </resources>\n` +
                 Rolling +
                 `<ListView>\n` +
                 TopBank +
