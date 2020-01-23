@@ -32,7 +32,7 @@ router.post("/upload/:userId", upload.single("file"), (req, res) => {
             console.log(err);
             return handleError(err, res);
         }
-        util.responseHandler(res, true, "success", `${userId}/${targetFile}`);
+        util.responseHandler(res, true, "success", `${userId}/images/${targetFile}`);
     });
 });
 
@@ -43,7 +43,7 @@ router.get("/:userId/image-list", (req, res) => {
         var result = [];
         files.forEach(file => {
             if (file.includes(userId))
-                result.push(`${userId}/${file}`);
+                result.push(`${userId}/images/${file}`);
         })
         // console.log(result);
         util.responseHandler(res, true, 'success', result);
@@ -52,7 +52,7 @@ router.get("/:userId/image-list", (req, res) => {
     }
 });
 
-router.get("/:userId/:filename", (req, res) => {
+router.get("/:userId/images/:filename", (req, res) => {
     var filename = req.params.filename;
     var filePath = `${config.STORAGE_PATH}/${filename}`;
     // console.log(filePath)
