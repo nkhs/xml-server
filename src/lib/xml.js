@@ -48,6 +48,14 @@ var checkSchedule = (ad) => {
     }
     return isValid;
 }
+
+var transformImageUrl = (url) => {
+    var host_url = config.host_url;
+    if (config.port == 80) host_url = host_url.replace(':80', '');
+    var rootURL = `${host_url}/api/`
+    if (url.startsWith(rootURL)) url = url.replace(rootURL, '');
+    return url;
+}
 var _xml = (uid, userName) => {
     Ad.find({ owner: uid })
         .then((adList) => {
@@ -64,7 +72,7 @@ var _xml = (uid, userName) => {
                 if (adList[i].type == 'Rolling') {
                     Rolling +=
                         `<rollingAd>\n` +
-                        `    <name>${adList[i].image}</name>\n` +
+                        `    <name>${transformImageUrl(adList[i].image)}</name>\n` +
                         `    <link>${adList[i].link}</link>\n` +
                         `    <position>${adList[i].position}</position>\n` +
                         `    <height>${adList[i].height}</height>\n` +
@@ -96,7 +104,7 @@ var _xml = (uid, userName) => {
                         `    <tabView>\n` +
                         `        <tabId>${adList[i].tabId}</tabId>\n` +
                         `        <fullWidth>${adList[i].fullwidth ? 1 : 0}</fullWidth>\n` +
-                        `        <name>${adList[i].image}</name>\n` +
+                        `        <name>${transformImageUrl(adList[i].image)}</name>\n` +
                         `        <link>${adList[i].link}</link>\n` +
                         `    </tabView>\n`
 
@@ -107,7 +115,7 @@ var _xml = (uid, userName) => {
                         `<appOpenAd>\n` +
                         `    <frequency>${adList[i].frequency}</frequency>\n` +
                         `    <duration>${adList[i].duration}</duration>\n` +
-                        `    <name>${adList[i].image}</name>\n` +
+                        `    <name>${transformImageUrl(adList[i].image)}</name>\n` +
                         `    <link>${adList[i].link}</link>\n` +
                         `</appOpenAd>\n`
 
