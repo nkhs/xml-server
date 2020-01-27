@@ -13,55 +13,59 @@ const handleError = (err, res) => {
         .end("Oops! Something went wrong!");
 };
 
-router.post("/upload/:userId", upload.single("file"), (req, res) => {
-    // console.log(req.body)
-    var userId = req.params.userId;
-    // var deviceId = req.body.deviceId.toLowerCase();
+router.post("/upload/:userName", upload.single("file"), (req, res) => {
+
+    var userName = req.params.userName;
+    if (userName.toLowerCase() == "admin") userName = "Admin"
+    userName = userName.replace('@', '_');
+
     const tempPath = req.file.path;
     const fileName = `${tempPath}.jpg`;
+    if (!fs.existsSync(`./public/storage/${userName}`))
+        fs.mkdirSync(`./public/storage/${userName}`);
 
-
-    var folder = path.dirname(fileName)
     var file = path.basename(fileName)
-    console.log('fileName', fileName, folder, file)
 
-    var targetFile = `${userId}_${file}`;
-    targetPath = `${folder}/${targetFile}`
+    targetPath = `./public/storage/${userName}/${file}`
     fs.rename(tempPath, targetPath, err => {
         if (err) {
             console.log(err);
             return handleError(err, res);
         }
-        util.responseHandler(res, true, "success", `${userId}/images/${targetFile}`);
+        util.responseHandler(res, true, "success", `images/${userName}/${file}`);
     });
 });
 
-router.get("/:userId/image-list", (req, res) => {
+router.get("/:username/image-list", (req, res) => {
     try {
-        var userId = req.params.userId;
-        var files = fs.readdirSync(`${config.STORAGE_PATH}`);
+        var username = req.params.username;
+        if (username.toLowerCase() == "admin") username = "Admin"
+        username = username.replace('@', '_');
+
+        var files = fs.readdirSync(`${config.STORAGE_PATH}/${username}`);
         var result = [];
         files.forEach(file => {
-            if (file.includes(userId))
-                result.push(`${userId}/images/${file}`);
+            result.push(`images/${username}/${file}`);
         })
-        // console.log(result);
         util.responseHandler(res, true, 'success', result);
     } catch (e) {
         util.responseHandler(res, false, 'error', e);
     }
 });
 
-router.get("/:userId/images/:filename", (req, res) => {
+router.get("/images/:username/:filename", (req, res) => {
+    var username = req.params.username;
+    if (username.toLowerCase() == "admin") username = "Admin"
+    username = username.replace('@', '_');
+
     var filename = req.params.filename;
-    var filePath = `${config.STORAGE_PATH}/${filename}`;
-    // console.log(filePath)
+    var filePath = `${config.STORAGE_PATH}/${username}/${filename}`;
+    
     try {
         var img = fs.readFileSync(filePath);
         res.writeHead(200, { "Content-Type": "image/jpeg" });
         res.end(img, "binary");
     } catch (err) {
-        // console.log(err)
         res.sendStatus(404);
     }
 });
