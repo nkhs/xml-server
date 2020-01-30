@@ -67,7 +67,7 @@ mongoose.connect(config.DB.URI, { useNewUrlParser: true, useUnifiedTopology: tru
     console.log("mongodb connected ...");
     var xml = require('./src/lib/xml');
     xml();
-    setInterval(xml, 1000 * 3600);
+    setInterval(xml, 3600 * 1000); // 3600 seconds
 
   })
   .catch(err => {
